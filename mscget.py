@@ -1,16 +1,15 @@
 import urllib
 
 """
-1. get citations from .aux
-2. get references from MathSciNet
-3. write to mr.bib
+Ideas:
 
-also do this for zbMath?
+  * zbMath
+
+To be implemented:
+
+  * more error handling
+
 """
-# TODO what is the canonical word for "key"?
-# TODO find out the correct format for MR keys
-# TODO error detection code...
-
 
 filename = "test.aux"
 
@@ -21,7 +20,16 @@ path = "http://www.ams.org/msnmain?fn=130&fmt=bibtex&pg1=MR&s1="
 
 # check whether a key refers to a MathSciNet entry
 def isMSC(key):
-  return key[0:2] == "MR"
+  return key[0:2] == "MR" and key[2:].isdigit()
+
+
+class KeyNotFoundException(Exception):
+  def __init__(self, key):
+    self.key = key
+  
+  def __str__(self):
+    return key + " was not found"
+
 
 def getBibTeX(key):
   assert isMSC(key)
@@ -30,14 +38,16 @@ def getBibTeX(key):
   code = ""
 
   for line in urllib.urlopen(path + key):
-    if line.strip() == "</pre>":
-      inCodeBlock = False
+    if "No publications results for" in line:
+      raise KeyNotFoundException(key)
+
+
+    if line.strip() == "</pre>": inCodeBlock = False
 
     if inCodeBlock:
       code = code + line
 
-    if line.strip() == "<pre>":
-      inCodeBlock = True
+    if line.strip() == "<pre>": inCodeBlock = True
 
   return code
 
@@ -61,8 +71,14 @@ with open(filename) as f:
 
   g = open("mr.bib", "w")
   for key in keys:
-    print "\tRetrieving " + key
-    g.write(getBibTeX(key))
+    print "\tRetrieving " + key + "...",
+
+    try:
+      g.write(getBibTeX(key))
+    except KeyNotFoundException as e:
+      print "Not found!"
+    else:
+      print "Done!"
 
   g.close()
 
