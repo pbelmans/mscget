@@ -1,0 +1,13 @@
+\documentclass[a4paper]{article}
+
+\begin{document}
+
+\cite{MR0048438}   % works
+\cite{MR048438d}   % should be ignored by the script
+\cite{MR3338683}   % works
+\cite{MR848483828} % works but does not exist
+
+\bibliographystyle{unsrt}
+\bibliography{mr}
+
+\end{document}

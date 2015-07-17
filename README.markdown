@@ -11,7 +11,7 @@ Use `\cite{MR...}` in your LaTeX file to cite articles on MathSciNet, where `MR.
 
 1. Run `pdflatex` (or similar) on your file to get an updated `.aux` file
 2. Run `python mscget.py` (update the hardcoded filename: I'll have to implement parameters I realise now)
-3. Appropriately import `mr.bib`
+3. Appropriately import `mr.bib` and run `bibtex`
 
 
 Questions to myself

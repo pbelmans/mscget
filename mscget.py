@@ -7,7 +7,7 @@ Ideas:
 
 """
 
-filename = "test.aux"
+filename = "example.aux"
 
 # list of known citation commands
 commands = ["citation", "abx@aux@cite"]
@@ -72,7 +72,7 @@ def getBibTeX(key):
     if line.strip() == "</pre>": inCodeBlock = False
 
     if inCodeBlock:
-      code = code + line
+      code = code + "\n" + line
 
     if line.strip() == "<pre>": inCodeBlock = True
 
